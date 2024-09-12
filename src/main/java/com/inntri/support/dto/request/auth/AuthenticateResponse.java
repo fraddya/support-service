@@ -2,6 +2,7 @@ package com.inntri.support.dto.request.auth;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.inntri.support.dto.response.RoleSuggestionResponse;
 import lombok.*;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class AuthenticateResponse {
   @JsonProperty("refresh_token")
   private String refresh_token;
 
-  //private List<RoleSuggestionResponse> roles;
+  private List<RoleSuggestionResponse> roles;
 
   private String username;
 

@@ -64,6 +64,13 @@ public class S3BucketIntegration {
         return filePathName;
     }
 
+    public String uploadFileToS3BucketWithFilePath(File file,String filePathName) throws SdkClientException, AmazonServiceException {
+        //String filePathName = propertiesConfig.getS3().getUploadedFolderName() + type + "/" + file.getName();
+        getS3client().putObject(new PutObjectRequest(propertiesConfig.getS3().getBucketName(), filePathName, file)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
+        return filePathName;
+    }
+
 
     public String uploadWithoutPrefixed(String location,File file,String type) throws SdkClientException, AmazonServiceException {
         String filePathName = location + type + "/" + file.getName();

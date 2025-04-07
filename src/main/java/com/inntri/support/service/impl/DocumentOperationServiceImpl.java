@@ -54,9 +54,10 @@ public class DocumentOperationServiceImpl implements DocumentOperationService {
         return null;
     }
 
+    /*This method will return local file path*/
     @Override
-    public String generatePdfFromHtml(String html, String fileName, String s3UploadFolderName) {
-        String outputFolder = System.getProperty("user.home")+"/PDF";
+    public String generatePdfFromHtml(String html, String fileName, String s3UploadFolderName, String outputFolder) {
+        //String outputFolder = System.getProperty("user.home")+"/PDF";
         log.info("outputFolder 3 {}", outputFolder);
 
         try {
@@ -73,7 +74,7 @@ public class DocumentOperationServiceImpl implements DocumentOperationService {
             log.info("appendWithFormat {}", appendWithFormat);
             String s3FilePath = fileOperationService.uploadObjectToS3(appendWithFormat, s3UploadFolderName);
             log.info("return from s3 : {}", s3FilePath);
-            return s3FilePath;
+            return outputFolder;
 
         } catch (IOException | DocumentException e) {
             e.printStackTrace();

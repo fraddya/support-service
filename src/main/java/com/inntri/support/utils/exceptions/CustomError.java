@@ -13,6 +13,18 @@ import org.springframework.http.HttpStatus;
 public class CustomError {
 
     private HttpStatus status;
-    private String errorCode;
+    private Integer errorCode;
     private String message;
+
+    public CustomError(String message, HttpStatus httpStatus) {
+        this.status = httpStatus;
+        this.message = message;
+
+    }
+
+    public CustomError(String message, Integer code) {
+        this.message = message;
+        this.errorCode = code;
+
+    }
 }

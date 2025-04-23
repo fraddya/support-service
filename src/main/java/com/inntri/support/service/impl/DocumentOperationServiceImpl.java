@@ -83,6 +83,35 @@ public class DocumentOperationServiceImpl implements DocumentOperationService {
         return null;
     }
 
+
+    @Override
+    public String generateAndReturnPdfPath(String html, String fileName, String s3UploadFolderName, String outputFolder) {
+        //String outputFolder = System.getProperty("user.home")+"/PDF";
+        log.info("outputFolder 3 {}", outputFolder);
+
+        try {
+            pdfGeneratorUtil.generatePdfFromHtml(html, outputFolder, fileName);
+            outputFolder = outputFolder + File.separator + fileName;
+            log.info("outputFolder {}", outputFolder);
+            //filesPath.add(outputFolder);
+            //s3 upload
+            byte[] inFileBytes = Files.readAllBytes(Paths.get(outputFolder));
+            String encodedString = Base64.getEncoder().encodeToString(inFileBytes);
+            log.info("encodedString {}", encodedString);
+
+            String appendWithFormat = appendFileFormat(encodedString,".pdf");
+            log.info("appendWithFormat {}", appendWithFormat);
+            String s3FilePath = fileOperationService.uploadObjectToS3(appendWithFormat, s3UploadFolderName);
+            log.info("return from s3 : {}", s3FilePath);
+            return s3FilePath;
+
+        } catch (IOException | DocumentException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     private String appendFileFormat(String encodedString, String fileFormat) {
         if (fileFormat.equals(".pdf")) {
             return "data:application/pdf;base64,"+encodedString;

@@ -6,4 +6,6 @@ public interface DocumentOperationService {
     String generateInvoiceBulkHires(InvoicePdfRequest request);
 
     String generatePdfFromHtml(String html, String fileName, String s3UploadFolderName, String outputFolder);
+
+    String generateAndReturnPdfPath(String html, String fileName, String s3UploadFolderName, String outputFolder);
 }

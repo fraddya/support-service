@@ -3,7 +3,7 @@ package com.inntri.support.enums;
 public enum RestApiResponseStatus {
 
     OK("OK", 200), VALIDATION_FAILURE("CLIENT_ERROR", 400),  SUBSCRIPTION_ERROR("SUBSCRIPTION_ERROR", 402),
-    ERROR("SYSTEM_ERROR", 500),NOT_FOUND("CLIENT_ERROR", 404);
+    ERROR("SYSTEM_ERROR", 500),NOT_FOUND("CLIENT_ERROR", 404),AUTHENTICATION_ERROR("CLIENT_ERROR", 403);
 
     private String status;
 

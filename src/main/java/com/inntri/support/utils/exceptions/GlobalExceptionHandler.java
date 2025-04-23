@@ -1,9 +1,12 @@
 package com.inntri.support.utils.exceptions;
 
 
+import com.inntri.support.enums.RestApiResponseStatus;
 import com.inntri.support.wrapper.BaseResponseWrapper;
 import com.inntri.support.wrapper.ExceptionResponseWrapper;
 import com.inntri.support.wrapper.ValidationFailureResponseWrapper;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -20,19 +23,18 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.security.auth.login.CredentialExpiredException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    /*@ExceptionHandler(EntityIdCryptoException.class)
-    public ResponseEntity<BaseResponseWrapper> handleBaseEntityIdCryptoException(EntityIdCryptoException ex,
-                                                                                 WebRequest request) {
-        return new ResponseEntity<>(
-                new ValidationFailureResponseWrapper("any of the entity IDs (given in path variable or request body parameters)",
-                        "corruptted entity ID"),
-                HttpStatus.BAD_REQUEST);
+    /*@ExceptionHandler(Exception.class)
+    public ResponseEntity<CustomError> handleGeneralException(Exception ex) {
+        CustomError error = new CustomError("INTERNAL_SERVER_ERROR", "An unexpected error occurred !!!!!!!!!!!!!!.");
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }*/
 
     @ExceptionHandler(ComplexValidationException.class)
@@ -75,7 +77,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<BaseResponseWrapper> handleEntityNotFound(
             EntityNotFoundException ex) {
         return new ResponseEntity<>(
-                new ExceptionResponseWrapper(ex.getMessage()), HttpStatus.NOT_FOUND);
+                new ExceptionResponseWrapper(ex.getMessage(), RestApiResponseStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
     }
 
     //@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -83,6 +85,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<BaseResponseWrapper> handlePermissionException(PermissionException ex,
                                                                                 WebRequest request) {
 
+        log.info("################### ================= handlePermissionException ======= $$$$$$$$$$$$");
         System.out.println("Permission exception occured");
         if (ex.getValidationFailures() != null) {
             return new ResponseEntity<>(
@@ -95,17 +98,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     //@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CredentialsExpiredException.class)
-    public ResponseEntity<BaseResponseWrapper> handleCredentialException(PermissionException ex,
-                                                                         WebRequest request) {
+    public ResponseEntity<BaseResponseWrapper> handleCredentialException(PermissionException ex) {
+        log.info("################### ================= handleCredentialException ===== $#$ {}", ex.getMessage());
+        System.out.println("Permission exception occurred");
 
-        System.out.println("Permission exception occured");
-        if (ex.getValidationFailures() != null) {
-            return new ResponseEntity<>(
-                    new ValidationFailureResponseWrapper(ex.getValidationFailures()), HttpStatus.FORBIDDEN);
-        } else {
-            return new ResponseEntity<>(
-                    new ValidationFailureResponseWrapper(ex.getField(), ex.getCode()), HttpStatus.FORBIDDEN);
-        }
+        return new ResponseEntity<>(
+                new ExceptionResponseWrapper(ex.getMessage(), RestApiResponseStatus.AUTHENTICATION_ERROR),HttpStatus.FORBIDDEN);
+
+        /*return new ResponseEntity<>(
+                new CustomError(ex.getField(), ex.getCode()), HttpStatus.FORBIDDEN);*/
+    }
+
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<BaseResponseWrapper> handleUnauthorizedException(UnauthorizedException ex) {
+        log.info("################### ================= handleCredentialException ===== $#$ {}", ex);
+        System.out.println("Permission exception occurred");
+
+        return new ResponseEntity<>(
+                new ExceptionResponseWrapper(ex.getMessage(), RestApiResponseStatus.AUTHENTICATION_ERROR),HttpStatus.FORBIDDEN);
+
+        /*return new ResponseEntity<>(
+                new CustomError(ex.getField(), ex.getCode()), HttpStatus.FORBIDDEN);*/
     }
 
     @ExceptionHandler({SQLException.class})
@@ -150,6 +164,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ValidationFailureResponseWrapper validationFailureResponseWrapper = new ValidationFailureResponseWrapper(ValidationFailures);
         return validationFailureResponseWrapper;
 
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<CustomError> requestError(RuntimeException e, HttpServletRequest request) {
+        //String trackingId = request.getAttribute(Constants.TRACKING_ID).toString();
+        logger.error("############ Service Error - TrackingId: {}", e);
+        var error = CustomError.builder()
+                .status(HttpStatus.FORBIDDEN)
+                .errorCode(HttpStatus.FORBIDDEN.value())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
 

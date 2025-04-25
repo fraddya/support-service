@@ -166,7 +166,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    /*@ExceptionHandler(RuntimeException.class)
     public ResponseEntity<CustomError> requestError(RuntimeException e, HttpServletRequest request) {
         //String trackingId = request.getAttribute(Constants.TRACKING_ID).toString();
         logger.error("############ Service Error - TrackingId: {}", e);
@@ -177,7 +177,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
-
+*/
 
 
 }

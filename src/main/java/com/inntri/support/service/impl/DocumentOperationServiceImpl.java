@@ -4,7 +4,7 @@ import com.inntri.support.dto.request.pdf.InvoicePdfRequest;
 import com.inntri.support.service.DocumentOperationService;
 import com.inntri.support.service.FileOperationService;
 import com.inntri.support.utils.PdfGeneratorUtil;
-import com.lowagie.text.DocumentException;
+import com.itextpdf.text.DocumentException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

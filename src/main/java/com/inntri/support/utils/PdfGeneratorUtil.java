@@ -1,6 +1,7 @@
 package com.inntri.support.utils;
 
-import com.lowagie.text.DocumentException;
+
+import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;

@@ -70,8 +70,17 @@ public class FileOperationServiceImpl implements FileOperationService {
     public File generateFileFromBase64String(String base64Str) {
         File file = null;
 
+        // Sanitize the MIME type if malformed
+        base64Str = sanitizeMimeType(base64Str);
+
         // Regular expression to extract the MIME type
         Pattern pattern = Pattern.compile("^data:([a-zA-Z0-9+/.-]+);base64,");
+
+        // Remove the data URI prefix if it exists
+        if (base64Str.startsWith("data:")) {
+            base64Str = base64Str.substring(base64Str.indexOf(",") + 1);
+        }
+
         Matcher matcher = pattern.matcher(base64Str);
 
         String extension = "txt"; // Default extension
@@ -104,13 +113,21 @@ public class FileOperationServiceImpl implements FileOperationService {
                     break;
             }
 
-            // Remove the base64 prefix
-            base64Str = base64Str.substring(matcher.end());
         }
 
         // Now write to file using the extracted extension
         file = writeToFile(base64Str, extension);
         return file;
+    }
+
+    private String sanitizeMimeType(String base64Str) {
+        return base64Str
+                .replace("data:@file/pdf", "data:application/pdf")
+                .replace("data:@file/png", "data:image/png")
+                .replace("data:@file/jpeg", "data:image/jpeg")
+                .replace("data:@file/jpg", "data:image/jpg")
+                .replace("data:@file/txt", "data:text/plain")
+                .replace("data:@file/gif", "data:image/gif");
     }
 
 

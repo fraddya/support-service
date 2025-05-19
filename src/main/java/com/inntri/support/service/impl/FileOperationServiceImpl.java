@@ -13,6 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -23,7 +25,7 @@ public class FileOperationServiceImpl implements FileOperationService {
 
     private static final String TEMP_FILE_PATH="temp-file";
 
-    @Override
+    /*@Override
     public File generateFileFromBase64String(String base64Str) {
         File file = null;
         //jpg,jpeg,png,gif
@@ -62,7 +64,55 @@ public class FileOperationServiceImpl implements FileOperationService {
             file = writeToFile(base64Str,"txt");
         }
         return file;
+    }*/
+
+    @Override
+    public File generateFileFromBase64String(String base64Str) {
+        File file = null;
+
+        // Regular expression to extract the MIME type
+        Pattern pattern = Pattern.compile("^data:([a-zA-Z0-9+/.-]+);base64,");
+        Matcher matcher = pattern.matcher(base64Str);
+
+        String extension = "txt"; // Default extension
+
+        if (matcher.find()) {
+            String mimeType = matcher.group(1); // e.g., image/png, application/pdf
+            switch (mimeType) {
+                case "image/jpeg":
+                case "/jpeg":
+                    extension = "jpeg";
+                    break;
+                case "image/jpg":
+                    extension = "jpg";
+                    break;
+                case "image/png":
+                case "/png":
+                    extension = "png";
+                    break;
+                case "image/gif":
+                    extension = "gif";
+                    break;
+                case "application/pdf":
+                    extension = "pdf";
+                    break;
+                case "text/plain":
+                    extension = "txt";
+                    break;
+                default:
+                    extension = "txt";
+                    break;
+            }
+
+            // Remove the base64 prefix
+            base64Str = base64Str.substring(matcher.end());
+        }
+
+        // Now write to file using the extracted extension
+        file = writeToFile(base64Str, extension);
+        return file;
     }
+
 
     @Override
     public void deleteFileFromThePath(File file) {

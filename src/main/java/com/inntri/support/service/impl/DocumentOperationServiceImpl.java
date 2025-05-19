@@ -39,10 +39,10 @@ public class DocumentOperationServiceImpl implements DocumentOperationService {
             //s3 upload
             byte[] inFileBytes = Files.readAllBytes(Paths.get(outputFolder));
             String encodedString = Base64.getEncoder().encodeToString(inFileBytes);
-            log.info("encodedString {}", encodedString);
+            //log.info("encodedString {}", encodedString);
 
             String appendWithFormat = appendFileFormat(encodedString,".pdf");
-            log.info("appendWithFormat {}", appendWithFormat);
+            //log.info("appendWithFormat {}", appendWithFormat);
             String s3FilePath = fileOperationService.uploadObjectToS3(appendWithFormat, request.getS3UploadFolderName());
             log.info("return from s3 : {}", s3FilePath);
             return s3FilePath;

@@ -13,6 +13,8 @@ public class TenantIdentifierResolver
 
   private String currentTenant = "unknown";
 
+  private Long companyId;
+
   public TenantIdentifierResolver() {}
 
   public TenantIdentifierResolver(String currentTenant) {
@@ -40,5 +42,13 @@ public class TenantIdentifierResolver
 
   public void setCurrentTenant(String tenant) {
     currentTenant = tenant;
+  }
+
+  public Long getCompanyId() {
+    return companyId;
+  }
+
+  public void setCompanyId(Long companyId) {
+    this.companyId = companyId;
   }
 }

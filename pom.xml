@@ -23,7 +23,21 @@
 		<spring.data.version>3.0.0</spring.data.version>
 		<springdoc.openapi.version>2.0.2</springdoc.openapi.version>
 		<jakarta.servlet.api.version>6.0.0</jakarta.servlet.api.version>
+		<spring-cloud.version>2022.0.4</spring-cloud.version>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -96,6 +110,11 @@
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
 			<version>1.12.597</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 
 		<!--<dependency>

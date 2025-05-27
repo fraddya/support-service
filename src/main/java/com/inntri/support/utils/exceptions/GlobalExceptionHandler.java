@@ -1,10 +1,13 @@
 package com.inntri.support.utils.exceptions;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inntri.support.enums.RestApiResponseStatus;
 import com.inntri.support.wrapper.BaseResponseWrapper;
 import com.inntri.support.wrapper.ExceptionResponseWrapper;
 import com.inntri.support.wrapper.ValidationFailureResponseWrapper;
+import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +39,34 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         CustomError error = new CustomError("INTERNAL_SERVER_ERROR", "An unexpected error occurred !!!!!!!!!!!!!!.");
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }*/
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<BaseResponseWrapper> handleFeignException(FeignException ex, WebRequest request) {
+        log.error("FeignException caught: {}", ex.contentUTF8());
+
+        String extractedMessage = "Remote service call failed";
+        String code = "REMOTE_SERVICE_ERROR";
+
+        try {
+            JsonNode root = objectMapper.readTree(ex.contentUTF8());
+
+            JsonNode validationFailures = root.path("validationFailures");
+            if (validationFailures.isArray() && validationFailures.size() > 0) {
+                JsonNode failure = validationFailures.get(0);
+                extractedMessage = failure.path("message").asText("Validation failed");
+                code = failure.path("code").asText("validation-failure");
+            }
+        } catch (Exception parseEx) {
+            log.error("Failed to parse FeignException response body", parseEx);
+        }
+
+        return new ResponseEntity<>(
+                new ValidationFailureResponseWrapper(code, extractedMessage),
+                HttpStatus.BAD_REQUEST
+        );
+    }
 
     @ExceptionHandler(ComplexValidationException.class)
     public ResponseEntity<BaseResponseWrapper> handleComplexValidationException(ComplexValidationException ex,

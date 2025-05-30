@@ -26,6 +26,8 @@ public class AuthenticateResponse {
 
   private Long userId;
 
+  private Long companyId;
+
   private String companyCode;
 
   private List<AuthoritySuggestionResponse>  authorities;

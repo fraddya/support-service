@@ -66,8 +66,49 @@ public class FileOperationServiceImpl implements FileOperationService {
         return file;
     }*/
 
+
     @Override
     public File generateFileFromBase64String(String base64Str) {
+        File file = null;
+        //jpg,jpeg,png,gif
+        if (base64Str.contains("data:image/jpeg;")) {
+            base64Str = base64Str.replace("data:image/jpeg;base64,", "");
+            file = writeToFile(base64Str,"jpeg");
+        } else if (base64Str.contains("data:/jpeg;")) {
+            //log.info("base64Str data:image/jpg; => {}",base64Str.contains("data:image/jpg;"));
+            base64Str = base64Str.replace("data:/jpeg;base64,", "");
+            file = writeToFile(base64Str,"jpeg");
+        }else if (base64Str.contains("data:image/jpg;")) {
+            //log.info("base64Str data:image/jpg; => {}",base64Str.contains("data:image/jpg;"));
+            base64Str = base64Str.replace("data:image/jpg;base64,", "");
+            file = writeToFile(base64Str,"jpg");
+        } else if (base64Str.contains("data:image/png;")) {
+            //log.info("base64Str data:image/png => {}",base64Str.contains("data:image/png;"));
+            base64Str = base64Str.replace("data:image/png;base64,", "");
+            file = writeToFile(base64Str,"png");
+        } else if (base64Str.contains("data:image/gif;")) {
+            //log.info("base64Str data:image/gif => {}",base64Str.contains("data:image/gif;"));
+            base64Str = base64Str.replace("data:image/gif;base64,", "");
+            file = writeToFile(base64Str,"gif");
+        } else if (base64Str.contains("data:application/pdf;")) {
+            //log.info("base64Str data:application/pdf; => {}",base64Str.contains("data:application/pdf;"));
+            base64Str = base64Str.replace("data:application/pdf;base64,", "");
+            file = writeToFile(base64Str,"pdf");
+        } else if (base64Str.contains("data:text/plain;base64,")){
+            base64Str = base64Str.replace("data:text/plain;base64,", "");
+            file = writeToFile(base64Str,"txt");
+        } else if (base64Str.contains("data:/png;base64,")) {
+            base64Str = base64Str.replace("data:/png;base64,", "");
+            file = writeToFile(base64Str,"png");
+        }
+        else {
+            file = writeToFile(base64Str,"txt");
+        }
+        return file;
+    }
+
+    //@Override
+    /*public File generateFileFromBase64String(String base64Str) {
         File file = null;
 
         // Sanitize the MIME type if malformed
@@ -118,7 +159,7 @@ public class FileOperationServiceImpl implements FileOperationService {
         // Now write to file using the extracted extension
         file = writeToFile(base64Str, extension);
         return file;
-    }
+    }*/
 
     private String sanitizeMimeType(String base64Str) {
         return base64Str

@@ -28,13 +28,13 @@ public class DocumentOperationServiceImpl implements DocumentOperationService {
     @Override
     public String generateInvoiceBulkHires(InvoicePdfRequest request) {
         String outputFolder = System.getProperty("user.home")+"/PDF";
-        log.info("outputFolder 3 {}", outputFolder);
+        log.info(" generateInvoiceBulkHires outputFolder 3 {}", outputFolder);
 
         try {
             String fileName = request.getInvoiceNumber() + "_" + LocalDateTime.now()+".pdf";
             pdfGeneratorUtil.generatePdfFromHtml(request.getHtml(), outputFolder, fileName);
             outputFolder = outputFolder + File.separator + fileName;
-            log.info("outputFolder {}", outputFolder);
+            log.info("generateInvoiceBulkHires outputFolder {}", outputFolder);
             //filesPath.add(outputFolder);
             //s3 upload
             byte[] inFileBytes = Files.readAllBytes(Paths.get(outputFolder));
@@ -97,10 +97,10 @@ public class DocumentOperationServiceImpl implements DocumentOperationService {
             //s3 upload
             byte[] inFileBytes = Files.readAllBytes(Paths.get(outputFolder));
             String encodedString = Base64.getEncoder().encodeToString(inFileBytes);
-            log.info("encodedString {}", encodedString);
+            //log.info("encodedString {}", encodedString);
 
             String appendWithFormat = appendFileFormat(encodedString,".pdf");
-            log.info("appendWithFormat {}", appendWithFormat);
+            //log.info("appendWithFormat {}", appendWithFormat);
             String s3FilePath = fileOperationService.uploadObjectToS3(appendWithFormat, s3UploadFolderName);
             log.info("return from s3 : {}", s3FilePath);
             return s3FilePath;
@@ -113,10 +113,9 @@ public class DocumentOperationServiceImpl implements DocumentOperationService {
     }
 
     private String appendFileFormat(String encodedString, String fileFormat) {
-        if (fileFormat.equals(".pdf")) {
-            return "data:application/pdf;base64,"+encodedString;
-        }
-        return encodedString;
+        log.info("appendFileFormat ====> {}", fileFormat);
+        log.info("appendFileFormat fileFormat.equals(\".pdf\") ====> {}", fileFormat.equals(".pdf"));
+        return fileFormat.equals(".pdf") ? "data:application/pdf;base64," + encodedString : encodedString;
     }
 
 

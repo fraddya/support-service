@@ -42,7 +42,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @ExceptionHandler(FeignException.class)
+    /*@ExceptionHandler(FeignException.class)
     public ResponseEntity<BaseResponseWrapper> handleFeignException(FeignException ex, WebRequest request) {
         log.error("FeignException caught: {}", ex.contentUTF8());
 
@@ -66,7 +66,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 new ValidationFailureResponseWrapper(code, extractedMessage),
                 HttpStatus.BAD_REQUEST
         );
-    }
+    }*/
 
     @ExceptionHandler(ComplexValidationException.class)
     public ResponseEntity<BaseResponseWrapper> handleComplexValidationException(ComplexValidationException ex,

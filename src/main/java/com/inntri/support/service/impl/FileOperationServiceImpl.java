@@ -100,6 +100,15 @@ public class FileOperationServiceImpl implements FileOperationService {
         } else if (base64Str.contains("data:/png;base64,")) {
             base64Str = base64Str.replace("data:/png;base64,", "");
             file = writeToFile(base64Str,"png");
+        }else if (base64Str.contains("data:video/mp4;base64,")) {
+            base64Str = base64Str.replace("data:video/mp4;base64,", "");
+            file = writeToFile(base64Str,"mp4");
+        } else if (base64Str.contains("data:video/webm;base64,")) {
+            base64Str = base64Str.replace("data:video/webm;base64,", "");
+            file = writeToFile(base64Str,"webm");
+        } else if (base64Str.contains("data:video/ogg;base64,")) {
+            base64Str = base64Str.replace("data:video/ogg;base64,", "");
+            file = writeToFile(base64Str,"ogg");
         }
         else {
             file = writeToFile(base64Str,"txt");

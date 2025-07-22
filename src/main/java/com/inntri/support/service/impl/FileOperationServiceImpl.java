@@ -3,6 +3,7 @@ package com.inntri.support.service.impl;
 
 import com.inntri.support.component.S3BucketIntegration;
 import com.inntri.support.service.FileOperationService;
+import com.inntri.support.utils.SupportConstant;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -13,8 +14,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -23,7 +22,7 @@ public class FileOperationServiceImpl implements FileOperationService {
 
     private final S3BucketIntegration s3BucketIntegration;
 
-    private static final String TEMP_FILE_PATH="temp-file";
+
 
     /*@Override
     public File generateFileFromBase64String(String base64Str) {
@@ -211,7 +210,7 @@ public class FileOperationServiceImpl implements FileOperationService {
         datetime = datetime.replace(":", "");
         String rndchars = RandomStringUtils.randomAlphanumeric(16);
         filename = rndchars + "_" + datetime + "_" + millis+"."+suffix;
-        return TEMP_FILE_PATH+"/"+filename;
+        return SupportConstant.TEMP_FILE_PATH+"/"+filename;
     }
 
     @Override

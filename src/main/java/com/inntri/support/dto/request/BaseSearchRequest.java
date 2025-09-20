@@ -23,7 +23,7 @@ public abstract class BaseSearchRequest {
             value = 10000L,
             message = "{searchRequest.pagination.pageSize.invalid}"
     )
-    private Integer pageSize = 100;
+    private Integer pageSize = 20;
     @Pattern(
             regexp = "asc|desc",
             flags = {Pattern.Flag.CASE_INSENSITIVE},

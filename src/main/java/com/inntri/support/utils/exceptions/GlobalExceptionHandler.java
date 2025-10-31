@@ -127,17 +127,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
     }
 
-    //@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CredentialsExpiredException.class)
-    public ResponseEntity<BaseResponseWrapper> handleCredentialException(PermissionException ex) {
-        log.info("################### ================= handleCredentialException ===== $#$ {}", ex.getMessage());
-        System.out.println("Permission exception occurred");
+    public ResponseEntity<BaseResponseWrapper> handleCredentialException(CredentialsExpiredException ex) {
+        log.info("################### handleCredentialException => {}", ex.getMessage());
+        System.out.println("Credentials expired exception occurred");
 
         return new ResponseEntity<>(
-                new ExceptionResponseWrapper(ex.getMessage(), RestApiResponseStatus.AUTHENTICATION_ERROR),HttpStatus.FORBIDDEN);
-
-        /*return new ResponseEntity<>(
-                new CustomError(ex.getField(), ex.getCode()), HttpStatus.FORBIDDEN);*/
+                new ExceptionResponseWrapper(ex.getMessage(), RestApiResponseStatus.AUTHENTICATION_ERROR),
+                HttpStatus.FORBIDDEN
+        );
     }
 
 

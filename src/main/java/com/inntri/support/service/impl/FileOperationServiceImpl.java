@@ -108,8 +108,12 @@ public class FileOperationServiceImpl implements FileOperationService {
         } else if (base64Str.contains("data:video/ogg;base64,")) {
             base64Str = base64Str.replace("data:video/ogg;base64,", "");
             file = writeToFile(base64Str,"ogg");
+        } else if (base64Str.contains("data:@file/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,")) {
+            base64Str = base64Str.replace("data:@file/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,", "");
+            file = writeToFile(base64Str,"vnd.openxmlformats-officedocument.wordprocessingml.document");
         }
         else {
+            log.info("base64Str default txt => {}",base64Str);
             file = writeToFile(base64Str,"txt");
         }
         return file;
